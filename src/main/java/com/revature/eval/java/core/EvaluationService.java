@@ -1,6 +1,9 @@
 package com.revature.eval.java.core;
 
 import java.time.temporal.Temporal;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,7 +18,12 @@ public class EvaluationService {
 	 */
 	public String reverse(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		String reverse = "";
+		for (int i = string.length()-1; i >= 0; i--) {
+			reverse += string.charAt(i);
+		}
+		
+		return reverse;
 	}
 
 	/**
@@ -28,8 +36,16 @@ public class EvaluationService {
 	 */
 	public String acronym(String phrase) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		String acronym = phrase.substring(0, 1).toUpperCase();
+		for(int i = 0; i < phrase.length()-1; i++){
+			if(phrase.substring(i, i+1).equals(" ") || phrase.substring(i, i+1).equals("-")) {
+				acronym += phrase.substring(i+1, i+2).toUpperCase();
+			}		
+		}       
+        return acronym;
 	}
+
+
 
 	/**
 	 * 3. Determine if a triangle is equilateral, isosceles, or scalene. An
@@ -40,7 +56,7 @@ public class EvaluationService {
 	 * different lengths.
 	 *
 	 */
-	static class Triangle {
+	static class Triangle {	
 		private double sideOne;
 		private double sideTwo;
 		private double sideThree;
@@ -82,19 +98,28 @@ public class EvaluationService {
 
 		public boolean isEquilateral() {
 			// TODO Write an implementation for this method declaration
+			if (sideOne == sideTwo && sideTwo == sideThree){
+                return true;
+            }
 			return false;
 		}
 
 		public boolean isIsosceles() {
 			// TODO Write an implementation for this method declaration
+			if (sideOne == sideThree || sideOne == sideTwo||sideTwo == sideThree){
+                return true;
+            }
 			return false;
 		}
 
 		public boolean isScalene() {
 			// TODO Write an implementation for this method declaration
-			return false;
+			if (sideOne != sideTwo && sideOne != sideThree){
+				return true;
 		}
+			return false;
 
+	}
 	}
 
 	/**
@@ -112,9 +137,37 @@ public class EvaluationService {
 	 * @param string
 	 * @return
 	 */
+		
 	public int getScrabbleScore(String string) {
-		// TODO Write an implementation for this method declaration
-		return 0;
+		int sum = 0;
+        char[] characters = string.toUpperCase().toCharArray();
+        for (char character : characters ) {
+            sum += getValueLetter(character);
+        }
+        return sum;
+    }
+	
+    int getValueLetter(char letter){
+      switch(letter){
+        case 'G':
+        case 'D': return 2;
+        case 'B':
+        case 'C':
+        case 'M':
+        case 'P': return 3;
+        case 'F':
+        case 'H':
+        case 'V':
+        case 'W':
+        case 'Y': return 4;
+        case 'K': return 5;
+        case 'J':
+        case 'X': return 8;
+        case 'Q':
+        case 'Z': return 10;
+        
+        default: return 1;
+       }
 	}
 
 	/**
@@ -149,8 +202,32 @@ public class EvaluationService {
 	 * NANP-countries, only 1 is considered a valid country code.
 	 */
 	public String cleanPhoneNumber(String string) {
-		// TODO Write an implementation for this method declaration
-		return null;
+		// TODO Write an implementation for this method declaration      
+
+		if (string.matches(".*[a-zA-Z]+.*")) {
+            throw new IllegalArgumentException("letters not permitted");
+        }
+        for (int i = 0; i < string.length(); i++) {
+            string = string.replaceAll("[\\D, ]", "");
+        }
+        if (string.length() > 10) { 
+            if (string.charAt(0) != '1') {
+                throw new IllegalArgumentException("Number must start with 1!");
+            } else {
+                string = string.substring(1);
+            }
+        }
+        if (string.length() != 10) {
+            throw new IllegalArgumentException("Incorrect number of digits!");
+        }
+        if (string.charAt(0) == '0' || string.charAt(0) == '1') { 
+            throw new IllegalArgumentException("Exchange code cannot start with zero or one");
+        }
+        if (string.charAt(3) == '0' || string.charAt(3) == '1') { 
+            throw new IllegalArgumentException("Area code cannot start with zero or one");
+        }
+ 
+        return string;
 	}
 
 	/**
@@ -164,7 +241,25 @@ public class EvaluationService {
 	 */
 	public Map<String, Integer> wordCount(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
+		List<String> words = new ArrayList<>();
+		Map<String, Integer> wordOccurrences = new HashMap<String, Integer>();
+		if(string.contains(",") && !string.contains("\n")) {
+		    words = Arrays.asList(string.split(","));
+		}else if(string.contains(" ")){
+		    words = Arrays.asList(string.split(" "));
+		}else if(string.contains(",\n")){
+		    words = Arrays.asList(string.split(",\n"));
+		}else {
+		    words.add(string);
+		}
+        for (String word : words){
+            if (!wordOccurrences.containsKey(word)){
+                wordOccurrences.put(word, 1);
+            }else{
+                wordOccurrences.put(word, wordOccurrences.get(word) + 1);
+            }
+        }
+        return wordOccurrences;
 	}
 
 	/**
@@ -208,7 +303,7 @@ public class EvaluationService {
 		public int indexOf(T t) {
 			// TODO Write an implementation for this method declaration
 			return 0;
-		}
+		}	
 
 		public BinarySearch(List<T> sortedList) {
 			super();
@@ -244,8 +339,14 @@ public class EvaluationService {
 	 */
 	public String toPigLatin(String string) {
 		// TODO Write an implementation for this method declaration
-		return null;
-	}
+		List<Character> vowels = Arrays.asList('a', 'e', 'i', 'o', 'u');
+        if (vowels.contains(string.toLowerCase().charAt(0))) {
+           string = string + "ay";
+        } else {
+            string = string.substring(1) + string.charAt(0) + "ay";
+        }
+        return string;
+    }
 
 	/**
 	 * 9. An Armstrong number is a number that is the sum of its own digits each
@@ -264,7 +365,18 @@ public class EvaluationService {
 	 */
 	public boolean isArmstrongNumber(int input) {
 		// TODO Write an implementation for this method declaration
-		return false;
+		int remainder, sumNumber = 0;
+        int number = input;
+        if(input < 10) return true;
+        while (input > 0) {
+            remainder = input % 10;
+            input = input / 10;
+            sumNumber += remainder * remainder * remainder;
+        }
+        if (number == sumNumber) {
+            return true;
+        }
+        return false;
 	}
 
 	/**
@@ -279,8 +391,18 @@ public class EvaluationService {
 	 */
 	public List<Long> calculatePrimeFactorsOf(long l) {
 		// TODO Write an implementation for this method declaration
-		return null;
-	}
+		List<Long> primeFactors = new ArrayList<>();
+        for (int i = 2; i <= l; i++){
+            while(l % i == 0){
+                primeFactors.add((long) i);
+                l = l/i;
+            }
+        }
+        if (l>2){
+            primeFactors.add(l);
+        }
+        return primeFactors;
+    }
 
 	/**
 	 * 11. Create an implementation of the rotational cipher, also sometimes called
@@ -337,8 +459,22 @@ public class EvaluationService {
 	 */
 	public int calculateNthPrime(int i) {
 		// TODO Write an implementation for this method declaration
-		return 0;
-	}
+		int num = 0;
+        int isPrime = 0;
+        num = i / 2;
+        if (i == 0 || i == 1) {
+        } else {
+            for (int j = 2; j <= num; j++) {
+                if (i % j == 0) {
+                    isPrime = 1;
+                    break;
+                }
+            }
+            if (isPrime == 0) {
+            } 
+        } 
+        return isPrime;
+      }
 
 	/**
 	 * 13 & 14. Create an implementation of the atbash cipher, an ancient encryption
@@ -431,8 +567,22 @@ public class EvaluationService {
 	 */
 	public boolean isPangram(String string) {
 		// TODO Write an implementation for this method declaration
-		return false;
-	}
+		boolean[] mark = new boolean[26];
+        int index = 0;
+        for (int i = 0; i < string.length(); i++) {
+            if ('A' <= string.charAt(i) &&
+                    string.charAt(i) <= 'Z')
+                index = string.charAt(i) - 'A';
+            else if ('a' <= string.charAt(i) &&
+                    string.charAt(i) <= 'z')
+                index = string.charAt(i) - 'a';
+            mark[index] = true;
+        }
+        for (int i = 0; i <= 25; i++)
+            if (!mark[i])
+                return (false);
+        return (true);
+    }
 
 	/**
 	 * 17. Calculate the moment when someone has lived for 10^9 seconds.
@@ -539,3 +689,4 @@ public class EvaluationService {
 	}
 
 }
+	
